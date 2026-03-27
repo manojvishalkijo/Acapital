@@ -376,7 +376,7 @@
   animation-delay: 0.5s;
 }
 
-.float-card.spending-card {
+.float-card.loan-status-card {
   bottom: 12%;
   right: 5%;
   width: 260px;
@@ -550,67 +550,67 @@
   opacity: 0.5;
 }
 
-/* Spending card inner */
-.spending-header h4 {
+/* Loan status card inner */
+.status-header h4 {
   font-size: var(--fs-sm);
   font-weight: 700;
   color: var(--dark-800);
   margin-bottom: 1rem;
 }
 
-.spending-item {
+.status-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.status-item {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0.5rem 0;
+  gap: 1rem;
+  padding-bottom: 0.75rem;
   border-bottom: 1px solid var(--gray-100);
 }
 
-.spending-item:last-child {
+.status-item:last-child {
+  padding-bottom: 0;
   border-bottom: none;
 }
 
-.spending-item-left {
+.status-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: 50px;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.status-badge.approved {
+  background: rgba(34, 197, 94, 0.1);
+  color: #15803d;
+}
+
+.status-badge.processing {
+  background: rgba(234, 179, 8, 0.1);
+  color: #a16207;
+}
+
+.status-info {
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  flex-direction: column;
 }
 
-.spending-icon {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: var(--fs-sm);
-}
-
-.spending-icon.travel {
-  background: rgba(239, 68, 68, 0.1);
-  color: var(--error);
-}
-
-.spending-icon.food {
-  background: rgba(59, 130, 246, 0.1);
-  color: var(--info);
-}
-
-.spending-icon.shop {
-  background: rgba(163, 230, 53, 0.1);
-  color: var(--lime-600);
-}
-
-.spending-item-left span {
-  font-size: var(--fs-sm);
-  font-weight: 500;
+.status-type {
+  font-size: 0.75rem;
+  font-weight: 600;
   color: var(--gray-700);
 }
 
-.spending-amount {
-  font-size: var(--fs-sm);
+.status-amount {
+  font-size: 0.8rem;
   font-weight: 700;
-  color: var(--gray-400);
+  color: var(--dark-800);
 }
 
 /* ==============================

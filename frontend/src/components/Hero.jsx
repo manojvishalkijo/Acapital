@@ -128,31 +128,33 @@ export default function Hero({ onApplyClick }) {
             <div className="profile-qr"></div>
           </div>
 
-          {/* Spending Card */}
-          <div className="float-card spending-card">
-            <div className="spending-header">
-              <h4>Breaking Down Your Spending</h4>
+          {/* Loan Status Card */}
+          <div className="float-card loan-status-card">
+            <div className="status-header">
+              <h4>Recent Approvals</h4>
             </div>
-            <div className="spending-item">
-              <div className="spending-item-left">
-                <div className="spending-icon travel"><Plane size={16} /></div>
-                <span>Travel</span>
+            <div className="status-list">
+              <div className="status-item">
+                <div className="status-badge approved">Approved</div>
+                <div className="status-info">
+                  <span className="status-type">Home Loan</span>
+                  <span className="status-amount">₹45,00,000</span>
+                </div>
               </div>
-              <span className="spending-amount">₹4,500</span>
-            </div>
-            <div className="spending-item">
-              <div className="spending-item-left">
-                <div className="spending-icon food"><Utensils size={16} /></div>
-                <span>Food & Drink</span>
+              <div className="status-item">
+                <div className="status-badge processing">Processing</div>
+                <div className="status-info">
+                  <span className="status-type">Business Loan</span>
+                  <span className="status-amount">₹12,50,000</span>
+                </div>
               </div>
-              <span className="spending-amount">₹6,700</span>
-            </div>
-            <div className="spending-item">
-              <div className="spending-item-left">
-                <div className="spending-icon shop"><ShoppingBag size={16} /></div>
-                <span>Shopping</span>
+              <div className="status-item">
+                <div className="status-badge approved">Approved</div>
+                <div className="status-info">
+                  <span className="status-type">Personal Loan</span>
+                  <span className="status-amount">₹3,50,000</span>
+                </div>
               </div>
-              <span className="spending-amount">₹3,200</span>
             </div>
           </div>
         </div>
