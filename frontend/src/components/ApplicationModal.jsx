@@ -59,78 +59,36 @@ export default function ApplicationModal({ isOpen, onClose, loanType, loanTitle 
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     if (!validate()) return;
     setSubmitting(true);
 
-    try {
-      // PRIORITY & CLASSIFICATION LOGIC
-      const amount = Number(formData.loanAmount);
-      let priority = 'Cool';
-      if (amount >= 2000000) priority = 'Hot (High Value)';
-      else if (amount >= 500000) priority = 'Warm (Quality)';
+    const amount = Number(formData.loanAmount);
+    const timestamp = new Date().toLocaleString('en-IN');
+    const recipientNumber = '919942888304';
+    
+    const messageText = `LOAN APPLICATION [NEW]\n` +
+      `--------------------------\n` +
+      `Name: ${formData.fullName}\n` +
+      `Phone: ${formData.phone}\n` +
+      `Email: ${formData.email}\n` +
+      `City: ${formData.city}\n` +
+      `Loan: ${loanTitle || 'General'}\n` +
+      `Amount: ₹${amount.toLocaleString('en-IN')}\n` +
+      `Income: ₹${Number(formData.monthlyIncome || 0).toLocaleString('en-IN')}\n` +
+      `Employment: ${formData.employmentType}\n` +
+      `Purpose: ${formData.purpose || 'None'}\n\n` +
+      `Time: ${timestamp}`;
 
-      let classification = 'Retail';
-      if (amount >= 5000000) classification = 'Premier';
-      else if (loanTitle && (loanTitle.toLowerCase().includes('business') || loanTitle.toLowerCase().includes('mortgage')))
-          classification = 'Enterprise';
-
-      const timestamp = new Date().toISOString().replace('T', ' ').substring(0, 19);
-
-      // SAVE TO FIREBASE FIRESTORE
-      const { collection, addDoc, serverTimestamp } = await import("firebase/firestore");
-      const { db } = await import("../firebase");
-
-      const leadData = {
-        fullName: formData.fullName,
-        phone: formData.phone,
-        email: formData.email,
-        loanAmount: amount,
-        monthlyIncome: formData.monthlyIncome,
-        employmentType: formData.employmentType,
-        city: formData.city,
-        purpose: formData.purpose || 'None',
-        loanTitle: loanTitle || 'General',
-        priority: priority,
-        classification: classification,
-        timestamp: serverTimestamp(),
-        createdAt: timestamp
-      };
-
-      const docRef = await addDoc(collection(db, "leads"), leadData);
-      
-      // GENERATE WHATSAPP LINK
-      const recipientNumber = '919942888304';
-      const messageText = `LOAN APPLICATION [NEW]
---------------------------
-PRIORITY: ${priority}
-CLASS: ${classification}
-
-CUSTOMER DETAILS:
-Name: ${formData.fullName}
-Phone: ${formData.phone}
-City: ${formData.city}
-Loan: ${loanTitle}
-Amount: ₹${amount.toLocaleString('en-IN')}
-
-Ref ID: ${docRef.id}
-Time: ${timestamp}`;
-
-      const waLink = `https://wa.me/${recipientNumber}?text=${encodeURIComponent(messageText)}`;
-      
-      setWhatsappLink(waLink);
+    const waLink = `https://wa.me/${recipientNumber}?text=${encodeURIComponent(messageText)}`;
+    
+    setTimeout(() => {
+      window.location.href = waLink;
       setSuccess(true);
-      
-      // Trigger WhatsApp
-      window.open(waLink, '_blank');
-
-    } catch (error) {
-      console.error('Submission Error:', error);
-      alert('Error saving application. Please check your internet connection and try again.');
-    } finally {
+      setWhatsappLink(waLink);
       setSubmitting(false);
-    }
+    }, 800);
   };
 
   return (
@@ -141,18 +99,28 @@ Time: ${timestamp}`;
             <div className="success-icon">
               <CheckCircle size={36} />
             </div>
-            <h3>Application Submitted!</h3>
+            <h3>Application Ready!</h3>
             <p>
-              Thank you for applying for a <strong>{loanTitle || 'Loan'}</strong>.
-              Our team will review your application and reach out to you via
-              WhatsApp within 24 hours.
+              Your details for <strong>{loanTitle || 'Loan'}</strong> have been prepared.
             </p>
-            <button
+            <p style={{ fontSize: '0.9rem', color: 'var(--gray-600)', marginBottom: '1.5rem' }}>
+              We are redirecting you to WhatsApp to complete your application. If the chat doesn't open automatically, please click the button below:
+            </p>
+            <a 
               className="btn btn-lime btn-lg"
-              style={{ marginTop: '1.5rem' }}
+              href={whatsappLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ padding: '0.8rem 1.5rem', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}
+            >
+               Open WhatsApp Chat
+            </a>
+            <button
+              className="btn btn-gray-outline btn-sm"
+              style={{ marginTop: '1rem', border: 'none', background: 'transparent', opacity: 0.6 }}
               onClick={handleClose}
             >
-              Done
+              Close
             </button>
           </div>
         ) : (
