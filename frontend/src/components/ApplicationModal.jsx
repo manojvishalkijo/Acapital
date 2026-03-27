@@ -1,6 +1,5 @@
+import { useState } from 'react';
 import { X, Lock, CheckCircle, Loader2, Send } from 'lucide-react';
-import { db } from '../firebase';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
 export default function ApplicationModal({ isOpen, onClose, loanType, loanTitle }) {
   const [formData, setFormData] = useState({
@@ -66,56 +65,26 @@ export default function ApplicationModal({ isOpen, onClose, loanType, loanTitle 
     setSubmitting(true);
 
     try {
-      // 1. Classification & Priority Logic
-      const amount = Number(formData.loanAmount);
-      let priority = 'Cool';
-      if (amount >= 2000000) priority = 'Hot (High Value)';
-      else if (amount >= 500000) priority = 'Warm (Quality)';
-
-      let classification = 'Retail';
-      if (amount >= 5000000) classification = 'Premier';
-      else if (loanTitle && (loanTitle.toLowerCase().includes('business') || loanTitle.toLowerCase().includes('mortgage')))
-          classification = 'Enterprise';
-
-      // 2. Save to Firestore
-      const leadData = {
-        ...formData,
-        loanTitle: loanTitle || 'Loan',
-        priority,
-        classification,
-        timestamp: serverTimestamp(),
-      };
-
-      await addDoc(collection(db, 'leads'), leadData);
-
-      // 3. WhatsApp Redirect
-      const recipientNumber = '918838921974';
-      const timeStr = new Date().toISOString().replace('T', ' ').substring(0, 19);
-      const messageText = `LOAN APPLICATION [MODAL]
---------------------------
-PRIORITY: ${priority}
-CLASS: ${classification}
-
-CUSTOMER DETAILS:
-Name: ${formData.fullName}
-Phone: ${formData.phone}
-City: ${formData.city} (via Modal)
-Loan: ${loanTitle}
-Amount: Rs. ${amount.toLocaleString('en-IN')}
-Notes: ${formData.purpose || 'None'}
-
-Time: ${timeStr}
-(Check Firestore Console)`;
-
-      const waLink = `https://wa.me/${recipientNumber}?text=${encodeURIComponent(messageText)}`;
+      const response = await fetch('http://localhost:5000/api/apply', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...formData, loanTitle })
+      });
       
-      setWhatsappLink(waLink);
-      setSuccess(true);
-      window.open(waLink, '_blank');
-
+      const result = await response.json();
+      
+      if (result.success) {
+        setWhatsappLink(result.whatsappLink);
+        setSuccess(true);
+        if (result.whatsappLink) {
+          window.open(result.whatsappLink, '_blank');
+        }
+      } else {
+        alert('Server Error: ' + result.message);
+      }
     } catch (error) {
       console.error('Submission Error:', error);
-      alert('Firebase Error: Verify your credentials in firebase.js');
+      alert('Network Error: Make sure your LOCAL node server is running on port 5000');
     } finally {
       setSubmitting(false);
     }

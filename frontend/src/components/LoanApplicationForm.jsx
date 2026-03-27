@@ -1,6 +1,5 @@
+import { useState } from 'react';
 import { Send, Loader2, CheckCircle, Lock, MessageCircle } from 'lucide-react';
-import { db } from '../firebase';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
 export default function LoanApplicationForm({ loanType, loanTitle, onSuccess }) {
   const [formData, setFormData] = useState({
@@ -35,57 +34,29 @@ export default function LoanApplicationForm({ loanType, loanTitle, onSuccess }) 
     setSubmitting(true);
     
     try {
-      // 1. Calculate Priority & Classification logic (Moved from backend)
-      const amount = Number(formData.loanAmount);
-      let priority = 'Cool';
-      if (amount >= 2000000) priority = 'Hot (High Value)';
-      else if (amount >= 500000) priority = 'Warm (Quality)';
-
-      let classification = 'Retail';
-      if (amount >= 5000000) classification = 'Premier';
-      else if (loanTitle && (loanTitle.toLowerCase().includes('business') || loanTitle.toLowerCase().includes('mortgage')))
-          classification = 'Enterprise';
-
-      // 2. Save directly to Firebase Firestore
-      const leadData = {
-        ...formData,
-        loanTitle: loanTitle || 'Not specified',
-        priority,
-        classification,
-        timestamp: serverTimestamp(),
-      };
-
-      await addDoc(collection(db, 'leads'), leadData);
-
-      // 3. Generate WhatsApp Logic (Moved from backend)
-      const recipientNumber = '918838921974';
-      const timeStr = new Date().toISOString().replace('T', ' ').substring(0, 19);
-      const messageText = `LOAN APPLICATION [NEW]
---------------------------
-PRIORITY: ${priority}
-CLASS: ${classification}
-
-CUSTOMER DETAILS:
-Name: ${formData.fullName}
-Phone: ${formData.phone}
-City: ${formData.city}
-Loan: ${loanTitle}
-Amount: Rs. ${amount.toLocaleString('en-IN')}
-
-Time: ${timeStr}
-(View in Firebase Console)`;
-
-      const waLink = `https://wa.me/${recipientNumber}?text=${encodeURIComponent(messageText)}`;
+      // POST to Node.js Backend (LOCAL ONLY - VERCEL WILL NOT PERSIST EXCEL)
+      const response = await fetch('http://localhost:5000/api/apply', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...formData, loanTitle })
+      });
       
-      setWhatsappLink(waLink);
-      setSuccess(true);
-
-      // Trigger WhatsApp tab
-      window.open(waLink, '_blank');
-
+      const result = await response.json();
+      
+      if (result.success) {
+        setWhatsappLink(result.whatsappLink);
+        setSuccess(true);
+        
+        // Trigger WhatsApp
+        if (result.whatsappLink) {
+          window.open(result.whatsappLink, '_blank');
+        }
+      } else {
+        alert('Server Error: ' + result.message);
+      }
     } catch (error) {
       console.error('Submission Error:', error);
-      alert('Firebase Error: Make sure your configuration in firebase.js is correct.');
+      alert('Network Error: Make sure your LOCAL node server is running on port 5000');
     } finally {
       setSubmitting(false);
     }

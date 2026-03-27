@@ -79,7 +79,7 @@ app.post('/api/apply', (req, res) => {
         xlsx.writeFile(wb, EXCEL_FILE);
 
         // Logic for WhatsApp (Returning a shareable link)
-        const recipientNumber = '919942888304'; // User should change this
+        const recipientNumber = '919942888304'; // User's updated number
         const downloadLink = `${BASE_URL}/api/download-leads`;
 
         const messageText = `LOAN APPLICATION [NEW]
