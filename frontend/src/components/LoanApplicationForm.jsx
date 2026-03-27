@@ -34,29 +34,68 @@ export default function LoanApplicationForm({ loanType, loanTitle, onSuccess }) 
     setSubmitting(true);
     
     try {
-      // POST to Node.js Backend (LOCAL ONLY - VERCEL WILL NOT PERSIST EXCEL)
-      const response = await fetch('http://localhost:5000/api/apply', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...formData, loanTitle })
-      });
+      // PRIORITY & CLASSIFICATION LOGIC (Moved from Backend)
+      const amount = Number(formData.loanAmount);
+      let priority = 'Cool';
+      if (amount >= 2000000) priority = 'Hot (High Value)';
+      else if (amount >= 500000) priority = 'Warm (Quality)';
+
+      let classification = 'Retail';
+      if (amount >= 5000000) classification = 'Premier';
+      else if (loanTitle && (loanTitle.toLowerCase().includes('business') || loanTitle.toLowerCase().includes('mortgage')))
+          classification = 'Enterprise';
+
+      const timestamp = new Date().toISOString().replace('T', ' ').substring(0, 19);
+
+      // SAVE TO FIREBASE FIRESTORE
+      const { collection, addDoc, serverTimestamp } = await import("firebase/firestore");
+      const { db } = await import("../firebase");
+
+      const leadData = {
+        fullName: formData.fullName,
+        phone: formData.phone,
+        email: formData.email,
+        loanAmount: amount,
+        monthlyIncome: formData.monthlyIncome,
+        employmentType: formData.employmentType,
+        city: formData.city,
+        loanTitle: loanTitle || 'General',
+        priority: priority,
+        classification: classification,
+        timestamp: serverTimestamp(),
+        createdAt: timestamp
+      };
+
+      const docRef = await addDoc(collection(db, "leads"), leadData);
       
-      const result = await response.json();
+      // GENERATE WHATSAPP LINK
+      const recipientNumber = '919942888304';
+      const messageText = `LOAN APPLICATION [NEW]
+--------------------------
+PRIORITY: ${priority}
+CLASS: ${classification}
+
+CUSTOMER DETAILS:
+Name: ${formData.fullName}
+Phone: ${formData.phone}
+City: ${formData.city}
+Loan: ${loanTitle}
+Amount: ₹${amount.toLocaleString('en-IN')}
+
+Ref ID: ${docRef.id}
+Time: ${timestamp}`;
+
+      const waLink = `https://wa.me/${recipientNumber}?text=${encodeURIComponent(messageText)}`;
       
-      if (result.success) {
-        setWhatsappLink(result.whatsappLink);
-        setSuccess(true);
-        
-        // Trigger WhatsApp
-        if (result.whatsappLink) {
-          window.open(result.whatsappLink, '_blank');
-        }
-      } else {
-        alert('Server Error: ' + result.message);
-      }
+      setWhatsappLink(waLink);
+      setSuccess(true);
+      
+      // Trigger WhatsApp automatically
+      window.open(waLink, '_blank');
+
     } catch (error) {
       console.error('Submission Error:', error);
-      alert('Network Error: Make sure your LOCAL node server is running on port 5000');
+      alert('Error saving application. Please check your internet connection and try again.');
     } finally {
       setSubmitting(false);
     }
