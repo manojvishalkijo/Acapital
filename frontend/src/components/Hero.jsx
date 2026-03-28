@@ -1,75 +1,105 @@
+import { useState, useEffect } from 'react';
 import { TrendingUp, ShieldCheck, Star, ArrowRight, Plane, Utensils, ShoppingBag } from 'lucide-react';
 
+const HERO_IMAGES = [
+  'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=1600', // Home
+  'https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?auto=format&fit=crop&q=80&w=1600', // Car
+  'https://images.unsplash.com/photo-1604328698692-f76ea9498e76?auto=format&fit=crop&q=80&w=1600', // Personal
+  'https://images.unsplash.com/photo-1521737852567-6949f3f9f2b5?auto=format&fit=crop&q=80&w=1600', // Business
+];
+
 export default function Hero({ onApplyClick }) {
+  const [currentImg, setCurrentImg] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentImg(prev => (prev + 1) % HERO_IMAGES.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
+
   return (
     <section className="hero" id="hero">
-      {/* LEFT DARK PANEL */}
+      {/* LEFT DARK PANEL WITH BACKGROUND SLIDER */}
       <div className="hero-left">
-        <div className="hero-tagline">
-          <Star size={14} />
-          India's Trusted Loan Partner
+        <div className="hero-slider">
+          {HERO_IMAGES.map((img, i) => (
+            <div 
+              key={i} 
+              className={`hero-slide${i === currentImg ? ' active' : ''}`}
+              style={{ backgroundImage: `url(${img})` }}
+            />
+          ))}
+          <div className="hero-slider-overlay" />
         </div>
 
-        <h1 className="hero-title">
-          Secure. Fast.<br />
-          <span className="highlight">Affordable.</span>
-        </h1>
+        <div className="hero-left-content">
+          <div className="hero-tagline">
+            <Star size={14} />
+            India's Trusted Loan Partner
+          </div>
 
-        <p className="hero-description">
-          Get the best loan deals tailored to your needs. From home loans to
-          business funding — we connect you with top lenders for quick approvals
-          and competitive rates.
-        </p>
+          <h1 className="hero-title">
+            Secure. Fast.<br />
+            <span className="highlight">Affordable.</span>
+          </h1>
 
-        <div className="hero-features">
-          <div className="hero-feature">
-            <div className="hero-feature-icon">
-              <TrendingUp size={20} />
+          <p className="hero-description">
+            Get the best loan deals tailored to your needs. From home loans to
+            business funding — we connect you with top lenders for quick approvals
+            and competitive rates.
+          </p>
+
+          <div className="hero-features">
+            <div className="hero-feature">
+              <div className="hero-feature-icon">
+                <TrendingUp size={20} />
+              </div>
+              <div>
+                <h4>Lowest Interest</h4>
+                <p>Starting from 8.5% p.a. with flexible tenure options</p>
+              </div>
             </div>
-            <div>
-              <h4>Lowest Interest</h4>
-              <p>Starting from 8.5% p.a. with flexible tenure options</p>
+            <div className="hero-feature">
+              <div className="hero-feature-icon">
+                <ShieldCheck size={20} />
+              </div>
+              <div>
+                <h4>Risk Free</h4>
+                <p>100% secure process with trusted banking partners</p>
+              </div>
             </div>
           </div>
-          <div className="hero-feature">
-            <div className="hero-feature-icon">
-              <ShieldCheck size={20} />
-            </div>
-            <div>
-              <h4>Risk Free</h4>
-              <p>100% secure process with trusted banking partners</p>
-            </div>
-          </div>
-        </div>
 
-        <div className="hero-cta">
-          <button className="btn btn-lime btn-lg" onClick={() => document.getElementById('loans')?.scrollIntoView({ behavior: 'smooth' })}>
-            Apply for Loan
-            <ArrowRight size={18} />
-          </button>
-          <button className="btn btn-outline-white" onClick={() => document.getElementById('loans')?.scrollIntoView({ behavior: 'smooth' })}>
-            Explore Plans
-          </button>
-        </div>
+          <div className="hero-cta">
+            <button className="btn btn-lime btn-lg" onClick={() => document.getElementById('loans')?.scrollIntoView({ behavior: 'smooth' })}>
+              Apply for Loan
+              <ArrowRight size={18} />
+            </button>
+            <button className="btn btn-outline-white" onClick={() => document.getElementById('loans')?.scrollIntoView({ behavior: 'smooth' })}>
+              Explore Plans
+            </button>
+          </div>
 
-        <div className="hero-social-proof">
-          <div className="avatar-stack">
-            <span>RK</span>
-            <span>PS</span>
-            <span>AM</span>
-            <span>2K+</span>
-          </div>
-          <div className="social-proof-text">
-            <strong>Friendly</strong> customer support<br />team
-          </div>
-          <div className="trust-badge">
-            <div className="trust-stars">
-              {[...Array(5)].map((_, i) => (
-                <Star key={i} size={14} fill="currentColor" />
-              ))}
+          <div className="hero-social-proof">
+            <div className="avatar-stack">
+              <span>RK</span>
+              <span>PS</span>
+              <span>AM</span>
+              <span>2K+</span>
             </div>
-            <div className="trust-text">
-              <strong>4.8 out of 5</strong> from 6.2k reviews
+            <div className="social-proof-text">
+              <strong>Friendly</strong> customer support<br />team
+            </div>
+            <div className="trust-badge">
+              <div className="trust-stars">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} size={14} fill="currentColor" />
+                ))}
+              </div>
+              <div className="trust-text">
+                <strong>4.8 out of 5</strong> from 6.2k reviews
+              </div>
             </div>
           </div>
         </div>
