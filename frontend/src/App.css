@@ -7,9 +7,9 @@
   left: 0;
   width: 100%;
   z-index: 1000;
-  padding: 1rem 0;
-  background: var(--white);
-  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.05);
+  padding: 0.5rem 0;
+  background: var(--dark-900);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 }
 
 .navbar-inner {
@@ -24,22 +24,17 @@
 .navbar-logo {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
-  font-size: 1.4rem;
-  font-weight: 800;
-  color: var(--dark-800);
-  letter-spacing: -0.5px;
+  transition: opacity 0.2s ease;
 }
 
-.navbar-logo .logo-icon {
-  width: 36px;
-  height: 36px;
-  background: var(--lime-400);
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--dark-800);
+.navbar-logo:hover {
+  opacity: 0.8;
+}
+
+.logo-img {
+  height: 64px; /* Increased from 42px */
+  width: auto;
+  object-fit: contain;
 }
 
 .navbar-links {
@@ -49,15 +44,15 @@
 }
 
 .navbar-links a {
-  color: var(--gray-600);
+  color: rgba(255, 255, 255, 0.7);
   font-size: var(--fs-sm);
   font-weight: 500;
-  transition: color var(--duration-fast) ease;
+  transition: all var(--duration-fast) ease;
   position: relative;
 }
 
 .navbar-links a:hover {
-  color: var(--dark-800);
+  color: var(--white);
 }
 
 .navbar-links a::after {
@@ -85,18 +80,18 @@
   padding: 0.5rem 1.3rem;
   font-size: var(--fs-sm);
   border-radius: 50px;
-  color: var(--dark-800);
-  border: 1px solid rgba(0, 0, 0, 0.15);
+  color: var(--white);
+  border: 1px solid rgba(255, 255, 255, 0.25);
 }
 
 .navbar-actions .btn-outline-white:hover {
-  background: rgba(0, 0, 0, 0.05);
-  border-color: var(--dark-800);
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--white);
 }
 
 .mobile-toggle {
   display: none;
-  color: var(--dark-800);
+  color: var(--white);
   cursor: pointer;
 }
 
@@ -1632,8 +1627,9 @@ select.form-input {
   padding: 3rem 2rem;
 }
 
-.auth-header .logo-icon {
+.auth-header .logo-img {
   margin: 0 auto 1.5rem;
+  height: 60px; /* Added explicit height */
 }
 
 .auth-header h2 {
@@ -1801,10 +1797,12 @@ select.form-input {
 }
 
 .loan-page-brand {
-  font-size: 1.3rem;
-  font-weight: 800;
-  color: var(--lime-400);
-  letter-spacing: -0.5px;
+  display: flex;
+  align-items: center;
+}
+
+.loan-page-brand .logo-img {
+  height: 52px;
 }
 
 .back-btn {
@@ -2753,28 +2751,14 @@ select.form-input {
 .footer-logo {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  font-size: 1.5rem;
-  font-weight: 800;
-  color: var(--white);
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
   transition: opacity var(--duration-fast) ease;
 }
 
-.footer-logo:hover {
-  opacity: 0.8;
+.footer-logo .logo-img {
+  height: 96px; /* Increased from 52px */
 }
 
-.footer-logo .logo-icon {
-  width: 40px;
-  height: 40px;
-  background: var(--lime-400);
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--dark-800);
-}
 
 .footer-description {
   color: rgba(255, 255, 255, 0.5);

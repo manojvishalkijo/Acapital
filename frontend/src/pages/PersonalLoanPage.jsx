@@ -31,7 +31,7 @@ export default function PersonalLoanPage() {
       {/* NAV */}
       <nav className="loan-page-nav">
         <button className="back-btn" onClick={() => navigate('/')}><ArrowLeft size={18} /> Back to Home</button>
-        <span className="loan-page-brand">ACapital</span>
+        <span className="loan-page-brand"><img src="/logo_transparent.png" alt="ACapital Logo" className="logo-img" /></span>
       </nav>
 
       {/* SPLIT HERO */}

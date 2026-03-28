@@ -19,11 +19,8 @@ export default function Navbar({ onApplyClick }) {
   return (
     <nav className={`navbar${scrolled ? ' scrolled' : ''}`}>
       <div className="navbar-inner">
-        <a href="#" className="navbar-logo">
-          <div className="logo-icon">
-            <Sparkles size={20} />
-          </div>
-          ACapital
+        <a href="#" onClick={() => scrollTo('hero')} className="navbar-logo">
+          <img src="/logo_transparent.png" alt="ACapital Logo" className="logo-img" />
         </a>
 
         <div className={`navbar-links ${mobileOpen ? 'mobile-open' : ''}`}>

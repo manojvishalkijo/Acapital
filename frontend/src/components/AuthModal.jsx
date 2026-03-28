@@ -31,9 +31,7 @@ export default function AuthModal({ isOpen, onClose, onSuccess }) {
         </button>
 
         <div className="auth-header">
-          <div className="logo-icon">
-            <Sparkles size={24} />
-          </div>
+          <img src="/logo_transparent.png" alt="ACapital Logo" className="logo-img" />
           <h2>Create Your Profile</h2>
           <p>Sign in to unlock personalized loan offers and track your applications.</p>
         </div>
